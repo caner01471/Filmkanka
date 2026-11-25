@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="tr">
 <head>
@@ -7,64 +8,121 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header>
-<div class="brand">🎬 Film<span>Kanka</span></div>
-<div class="status" id="status">Bağlanıyor…</div>
+  <div class="brand">🎬 Film<span>Kanka</span></div>
+  <div class="status" id="status">Bağlanıyor…</div>
 </header>
+
 <main>
 <section class="welcome" id="welcome">
-<p class="eyebrow">AYNI FİLM · AYNI ANDA</p>
-<h1>Film keyfi <em>birlikte</em> güzel.</h1>
-<p class="muted">Bir oda aç, kodu arkadaşına gönder ve desteklenen videoları birlikte izle.</p>
-<div class="join-card">
-<label>Adın</label>
-<input id="name" maxlength="24" placeholder="Adını yaz">
-<label>Oda kodu</label>
-<input id="room" maxlength="10" placeholder="Örn. KANKA25">
-<button id="join">Odaya gir</button>
-</div>
+  <p class="eyebrow">AYNI FİLM · AYNI ANDA</p>
+  <h1>Film keyfi <em>birlikte</em> güzel.</h1>
+  <p class="muted">Bir oda aç, kodu arkadaşına gönder ve birlikte izle.</p>
+
+  <div class="join-card">
+    <label>Adın</label>
+    <input id="name" maxlength="24" placeholder="Adını yaz">
+
+    <label>Oda kodu</label>
+    <input id="room" maxlength="10" placeholder="Örn. KANKA25">
+
+    <button id="join">Odaya gir</button>
+  </div>
 </section>
+
 <section id="app" class="hidden">
-<div class="roombar">
-<div><span class="eyebrow">ODANIZ</span><strong id="roomCode">------</strong></div>
-<button class="secondary" id="copy">Kodu kopyala</button>
-<span id="people" class="muted">1 kişi</span>
-</div>
-<div class="layout">
-<section class="maincol">
-<div class="player-card">
-<div class="video-wrap">
-<video id="video" controls playsinline></video>
-<div id="emptyVideo" class="empty-video">
-<div>▶</div><b>Film bağlantısını ekleyin</b>
-<span>MP4 veya WebM bağlantısı gerekir.</span>
-</div>
-</div>
-<div class="video-form">
-<input id="videoUrl" placeholder="https://…/film.mp4">
-<button id="loadVideo">Videoyu yükle</button>
-</div>
-<p class="hint">Yalnızca doğrudan oynatılabilen video bağlantıları desteklenir.</p>
-</div>
-<div class="voice-card">
-<div><b>🎙️ Sesli sohbet</b><p class="muted">Mikrofon izni vererek konuşabilirsiniz.</p></div>
-<button id="voice">Sese katıl</button>
-<audio id="remoteAudio" autoplay></audio>
-</div>
-</section>
-<aside class="chat-card">
-<h2>💬 Sohbet</h2>
-<div id="messages" class="messages"><p class="system">Odaya hoş geldin!</p></div>
-<form id="chatForm">
-<input id="chatInput" maxlength="500" placeholder="Mesaj yaz…">
-<button>Gönder</button>
-</form>
-</aside>
-</div>
+
+  <div class="roombar">
+    <div>
+      <span class="eyebrow">ODANIZ</span>
+      <strong id="roomCode">------</strong>
+    </div>
+    <button class="secondary" id="copy">Kodu kopyala</button>
+    <span id="people" class="muted">1 kişi</span>
+  </div>
+
+  <div class="layout">
+
+    <section class="maincol">
+
+      <div class="player-card">
+
+        <div class="video-wrap">
+
+          <video id="video" controls playsinline></video>
+
+          <iframe
+            id="embedPlayer"
+            title="FilmKanka film oynatıcı"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+            style="display:none;width:100%;height:100%;border:0;">
+          </iframe>
+
+          <div id="emptyVideo" class="empty-video">
+            <div>▶</div>
+            <b>Film bağlantısını ekleyin</b>
+            <span>Desteklenen sağlayıcının resmî gömme bağlantısını girin.</span>
+          </div>
+
+        </div>
+
+        <div class="video-form">
+
+          <select id="videoType">
+            <option value="embed">Resmî gömülü oynatıcı</option>
+            <option value="direct">MP4 / WebM</option>
+          </select>
+
+          <input
+            id="videoUrl"
+            placeholder="Resmî gömme bağlantısını girin">
+
+          <button id="loadVideo">Filmi aç</button>
+
+        </div>
+
+        <p class="hint">
+          Yalnızca sağlayıcının izin verdiği resmî gömme bağlantıları desteklenir.
+        </p>
+
+      </div>
+
+      <div class="voice-card">
+        <div>
+          <b>🎙️ Sesli sohbet</b>
+          <p class="muted">Mikrofon izni vererek konuşabilirsiniz.</p>
+        </div>
+
+        <button id="voice">Sese katıl</button>
+        <audio id="remoteAudio" autoplay></audio>
+      </div>
+
+    </section>
+
+    <aside class="chat-card">
+      <h2>💬 Sohbet</h2>
+
+      <div id="messages" class="messages">
+        <p class="system">Odaya hoş geldin!</p>
+      </div>
+
+      <form id="chatForm">
+        <input id="chatInput" maxlength="500" placeholder="Mesaj yaz…">
+        <button>Gönder</button>
+      </form>
+    </aside>
+
+  </div>
 </section>
 </main>
+
 <footer>FilmKanka · Birlikte izle</footer>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="app.js"></script>
+
 </body>
-  </html>
+</html>
