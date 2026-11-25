@@ -11,6 +11,7 @@ let peer = null;
 let pendingOffer = null;
 let pendingIce = [];
 let syncing = false;
+let currentVideoType = "embed";
 
 function addMessage(name, message) {
   const item = document.createElement("p");
@@ -19,9 +20,69 @@ function addMessage(name, message) {
   $("messages").scrollTop = $("messages").scrollHeight;
 }
 
-function loadVideo(url) {
-  $("video").src = url;
+function showEmpty() {
+  $("video").style.display = "none";
+  $("embedPlayer").style.display = "none";
+  $("emptyVideo").style.display = "flex";
+}
+
+function loadVideo(url, type) {
+  const video = $("video");
+  const embed = $("embedPlayer");
+
+  currentVideoType = type;
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
+  embed.src = "about:blank";
+
   $("emptyVideo").style.display = "none";
+
+  if (type === "direct") {
+    embed.style.display = "none";
+    video.style.display = "block";
+    video.src = url;
+    video.load();
+  } else {
+    video.style.display = "none";
+    embed.style.display = "block";
+    embed.src = url;
+  }
+}
+
+function validateEmbedUrl(url) {
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "https:") return false;
+
+    const host = parsed.hostname.toLowerCase();
+
+    return (
+      host === "www.youtube-nocookie.com" ||
+      host === "www.youtube.com" ||
+      host === "youtube.com" ||
+      host === "player.vimeo.com"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function validateDirectUrl(url) {
+  try {
+    const parsed = new URL(url);
+
+    if (!["https:", "http:"].includes(parsed.protocol)) {
+      return false;
+    }
+
+    return /\.(mp4|webm|ogg)(\?.*)?$/i.test(parsed.pathname + parsed.search);
+  } catch {
+    return false;
+  }
 }
 
 $("join").onclick = () => {
@@ -48,16 +109,9 @@ socket.on("joined", data => {
 });
 
 socket.on("room-state", state => {
-  if (state.videoUrl) {
-    loadVideo(state.videoUrl);
-    $("video").addEventListener("loadedmetadata", function ready() {
-      $("video").removeEventListener("loadedmetadata", ready);
-      syncing = true;
-      $("video").currentTime = state.time || 0;
-      if (state.playing) $("video").play().catch(() => {});
-      setTimeout(() => syncing = false, 500);
-    });
-  }
+  if (!state.videoUrl) return;
+
+  loadVideo(state.videoUrl, state.videoType || "direct");
 });
 
 socket.on("room-count", count => {
@@ -86,18 +140,32 @@ $("copy").onclick = async () => {
 
 $("loadVideo").onclick = () => {
   const url = $("videoUrl").value.trim();
+  const type = $("videoType").value;
 
-  if (!/^https?:\/\//i.test(url)) {
-    alert("Geçerli bir video bağlantısı gir.");
+  if (type === "embed" && !validateEmbedUrl(url)) {
+    alert("Desteklenmeyen bağlantı. Resmî YouTube veya Vimeo oynatıcı bağlantısı gir.");
     return;
   }
 
-  loadVideo(url);
-  socket.emit("set-video", url);
+  if (type === "direct" && !validateDirectUrl(url)) {
+    alert("Geçerli bir MP4, WebM veya OGG bağlantısı gir.");
+    return;
+  }
+
+  loadVideo(url, type);
+
+  socket.emit("set-video", {
+    url,
+    type
+  });
 };
 
+socket.on("video-changed", data => {
+  loadVideo(data.url, data.type);
+});
+
 function sendPlayback() {
-  if (syncing || !roomCode) return;
+  if (syncing || !roomCode || currentVideoType !== "direct") return;
 
   socket.emit("playback", {
     time: $("video").currentTime,
@@ -109,11 +177,9 @@ $("video").addEventListener("play", sendPlayback);
 $("video").addEventListener("pause", sendPlayback);
 $("video").addEventListener("seeked", sendPlayback);
 
-socket.on("video-changed", url => {
-  loadVideo(url);
-});
-
 socket.on("playback", state => {
+  if (currentVideoType !== "direct") return;
+
   const video = $("video");
   syncing = true;
 
