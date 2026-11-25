@@ -1,0 +1,171 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #090d18;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #293044;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.brand span {
+  color: #a78bfa;
+}
+
+.status, .muted, .hint {
+  color: #a5adc0;
+}
+
+main {
+  max-width: 1000px;
+  margin: 45px auto;
+  padding: 20px;
+}
+
+.welcome {
+  max-width: 550px;
+  margin: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #a78bfa;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  font-size: 46px;
+}
+
+h1 em {
+  color: #a78bfa;
+}
+
+.join-card, .player-card, .chat-card,
+.voice-card {
+  background: #151c2d;
+  border: 1px solid #29344d;
+  border-radius: 18px;
+  padding: 22px;
+  margin-top: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  margin: 9px 0 17px;
+  border-radius: 10px;
+  border: 1px solid #39445e;
+  background: #0c1220;
+  color: white;
+  font-size: 15px;
+}
+
+button {
+  background: #8b5cf6;
+  color: white;
+  border: 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.join-card button {
+  width: 100%;
+}
+
+.secondary {
+  background: #29344d;
+}
+
+.hidden {
+  display: none;
+}
+
+.roombar, .voice-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.video-wrap {
+  position: relative;
+  background: black;
+  border-radius: 12px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+}
+
+.empty-video {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.video-form {
+  margin-top: 15px;
+}
+
+.messages {
+  height: 300px;
+  overflow-y: auto;
+}
+
+.system {
+  color: #a78bfa;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #8992a8;
+}
+
+@media(max-width:700px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 35px;
+  }
+
+  main {
+    margin-top: 20px;
+  }
+}
